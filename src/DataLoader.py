@@ -57,6 +57,7 @@ class DataLoader():
         to_drop = [x for x in df if x.startswith(('unnamed', 'date/time'))]
         df.drop(to_drop, axis=1, inplace=True)
         df.columns = [category + '_' + col for col in df.columns]
+        df = _clean_columns(df)
 
         path = '../data/CAT_2019_gamelogs.csv'
         df.to_csv(path.replace('CAT', category))

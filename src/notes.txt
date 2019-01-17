@@ -1,0 +1,23 @@
+data summary:
+  * player_logs - player statistics including dfs scores
+    2016
+    2017
+    2018
+    2019
+
+  * team_logs - team statistics used to create team and opp training data
+    2016
+    2017
+    2018
+    2019
+
+  * wish_list
+    over_under for each game
+    output of probable point distributions rather than predictions
+
+
+Training data format
+
+| Player_stats (rolling avg or expanding avg?) |
+      | team_stats (rolling avg or expanding avg?) |
+            | opp_stats (rolling avg or expanding avg?) |
