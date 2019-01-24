@@ -72,6 +72,7 @@
 | Frank Kaminsky     |    PF    |   16.91*  |  4.7*  | -12.2 |
 | Karl-Anthony Towns |     C    |   42.93   |  60.4  | +17.5 |
 | TOTAL              |          |   264.0   |  262.3 |  -1.7 |
+
 <sup><sup>Figure 4. Knapsack Selected Lineup 12/15/18</sup>
 
 * Unfortunately, this lineup was not a winner but was fairly accurate in determining overall score.
