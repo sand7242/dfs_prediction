@@ -7,10 +7,11 @@
 
 
 ![](images/empty_lineup_sheet.png)
-<sup><sup>Figure 1 Draftkings lineup draft sheet  
-source: Draftkings.com</sup>
-
-
+<div id="expand-box">
+<div id="expand-box-header" class="clearfix">
+ <sup><span style="float: left;">Figure 1 Draftkings lineup draft sheet </span></sup>
+ <sup><span style="float: right;">source: Draftkings.com</span></sup>
+</div>
 
 ###### Types of Contests (50/50 vs. Tournaments)
 1. 50/50: If a contestant's score is in the top 50% of all entries, the contestant wins the cost of the entry price.
@@ -27,6 +28,8 @@ source: Draftkings.com</sup>
 
     * Fantasy scores are a weighted value of a player's box score for a given game.
 
+<center>
+
 | Scoring       |           |
 |---------------|-----------|
 | Point         | +1 Pt     |
@@ -40,6 +43,7 @@ source: Draftkings.com</sup>
 | Triple Double | +3 Pts    |
 
 <sup><sup>Figure 2. Scoring Calculation</sup>
+</center>
 
 * Using those predictions, construct the optimal lineup through an automated process by selecting players to fit within the positional and salary cap constraints.
 
