@@ -52,7 +52,6 @@
 * Determined the optimal window size to predict daily player performance, i.e., how many of the previous performances should be used in determining a players performance today?
 
 ![](images/rmse_by_window_len.png)
-
 <sup><sup>Figure 3. RMSE By Window Length</sup>
 
 
