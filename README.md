@@ -5,9 +5,10 @@
 
 * When selecting a team, a contestant is constrained by the salary cap (an allotment of draft funds). Each contestant has the same salary cap.
 
-<sup><sup>source: Draftkings.com</sup>
+
 ![](images/empty_lineup_sheet.png)
-<sup><sup>Figure 1 Draftkings lineup draft sheet</sup>
+<sup><sup>Figure 1 Draftkings lineup draft sheet  
+source: Draftkings.com</sup>
 
 
 
