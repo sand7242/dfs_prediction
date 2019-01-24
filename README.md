@@ -1,5 +1,5 @@
 ## Finding the Perfect Lineup
-* Daily fantasy sports are derived from the season long contests in which a contestants draft teams and keep that team for the length of the season.
+* Daily fantasy sports are derived from the season long contests in which contestants draft teams and keep that team for the length of the season.
 
 * In daily fantasy contests, contestants select teams on a daily basis. After the last game has ended, dfs results are posted and winning contestants are paid out.
 
@@ -7,7 +7,6 @@
 
 <sup><sup>source: Draftkings.com</sup>
 ![](images/empty_lineup_sheet.png)
-
 <sup><sup>Figure 1 Draftkings lineup draft sheet</sup>
 
 
@@ -38,6 +37,7 @@
 | Turnover      | -0.5 Pts  |
 | Double Double | +1.5 Pts  |
 | Triple Double | +3 Pts    |
+
 <sup><sup>Figure 2. Scoring Calculation</sup>
 
 * Using those predictions, construct the optimal lineup through an automated process by selecting players to fit within the positional and salary cap constraints.
