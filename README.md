@@ -5,9 +5,11 @@
 
 * When selecting a team, a contestant is constrained by the salary cap (an allotment of draft funds). Each contestant has the same salary cap.
 
-<sup><sup>Figure 1 Draftkings lineup draft sheet</sup>
-![](images/empty_lineup_sheet.png)
 <sup><sup>source: Draftkings.com</sup>
+![](images/empty_lineup_sheet.png)
+
+<sup><sup>Figure 1 Draftkings lineup draft sheet</sup>
+
 
 
 ###### Types of Contests (50/50 vs. Tournaments)
@@ -50,6 +52,7 @@
 * Determined the optimal window size to predict daily player performance, i.e., how many of the previous performances should be used in determining a players performance today?
 
 ![](images/rmse_by_window_len.png)
+
 <sup><sup>Figure 3. RMSE By Window Length</sup>
 
 
@@ -71,7 +74,7 @@
 | TOTAL              |          |   264.0   |  262.3 |  -1.7 |
 <sup><sup>Figure 4. Knapsack Selected Lineup 12/15/18</sup>
 
-* Unfortunately, this was not a winner but was fairly accurate in determining overall score.
+* Unfortunately, this lineup was not a winner but was fairly accurate in determining overall score.
 
 ## Conclusion
 * Through the first week of trials, the results are promising. However, in order to win large scale contests, the model needs to be able to exploit favorable team and player matchups to find players with a higher chance for success.
