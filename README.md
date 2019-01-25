@@ -41,6 +41,7 @@
 | Turnover      | -0.5 Pts  |
 | Double Double | +1.5 Pts  |
 | Triple Double | +3 Pts    |
+
 <sup><sup>Figure 2. Scoring Calculation</sup>
 
 </center>
