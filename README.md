@@ -41,11 +41,9 @@
 | Turnover      | -0.5 Pts  |
 | Double Double | +1.5 Pts  |
 | Triple Double | +3 Pts    |
-
 <sup><sup>Figure 2. Scoring Calculation</sup>
 
 </center>
-
 * Using those predictions, construct the optimal lineup through an automated process by selecting players to fit within the positional and salary cap constraints.
 
 * Compare the lineup chosen by my model to the actual scores along with other lineups chosen by higher scoring contestants.
