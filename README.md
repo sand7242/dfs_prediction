@@ -10,8 +10,7 @@
 ![](images/empty_lineup_sheet.png)
 <div id="expand-box">
 <div id="expand-box-header" class="clearfix">
- <sup><span style="float: left;">Figure 1 Draftkings lineup draft sheet </span></sup>
- <sup><span style="float: right;">source: Draftkings.com</span></sup>
+ <sup><span style="float: left;">source: Draftkings.com</span></sup>
 </div>
 
 ###### Types of Contests (50/50 vs. Tournaments)
