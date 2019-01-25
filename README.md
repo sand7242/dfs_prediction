@@ -30,7 +30,9 @@
 
 <center>
 
-| Scoring       |           |
+###### Table 1. Scoring Calculation
+
+| Stat          | Scoring   |
 |---------------|-----------|
 | Point         | +1 Pt     |
 | Made 3pt Shot | +0.5 Pts  |
@@ -41,8 +43,6 @@
 | Turnover      | -0.5 Pts  |
 | Double Double | +1.5 Pts  |
 | Triple Double | +3 Pts    |
-
-<sup><sup>Figure 2. Scoring Calculation</sup>
 
 </center>
 * Using those predictions, construct the optimal lineup through an automated process by selecting players to fit within the positional and salary cap constraints.
