@@ -43,7 +43,7 @@
 | Triple Double | +3 Pts    |
 
 </center>
-<sup><sup>Figure 2. Scoring Calculation</sup>
+<!-- <sup><sup>Figure 2. Scoring Calculation</sup> -->
 
 * Using those predictions, construct the optimal lineup through an automated process by selecting players to fit within the positional and salary cap constraints.
 
