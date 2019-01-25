@@ -5,6 +5,7 @@
 
 * When selecting a team, a contestant is constrained by the salary cap (an allotment of draft funds). Each contestant has the same salary cap.
 
+###### Figure 1. Draftkings lineup draft sheet
 
 ![](images/empty_lineup_sheet.png)
 <div id="expand-box">
@@ -56,14 +57,15 @@
 
 * Determined the optimal window size to predict daily player performance, i.e., how many of the previous performances should be used in determining a players performance today?
 
+###### Figure 2. RMSE By Window Length
+
 ![](images/rmse_by_window_len.png)
-
-<sup><sup>Figure 3. RMSE By Window Length</sup>
-
 
 * After dropping low scores and applying a grid search to determine the best parameters, RMSE came in at 8.989 for the GB Model.
 
 * The predictions below were generated using a Gradient Boosted model with 10-fold cross validation.
+
+###### Table 2. Knapsack Selected Lineup
 
 | Lineup             | Position | Predicted | Actual |  Diff |
 |--------------------|:--------:|:---------:|:------:|:-----:|
@@ -77,8 +79,6 @@
 | Frank Kaminsky     |    PF    |   16.91*  |  4.7*  | -12.2 |
 | Karl-Anthony Towns |     C    |   42.93   |  60.4  | +17.5 |
 | TOTAL              |          |   264.0   |  262.3 |  -1.7 |
-
-<sup><sup>Figure 4. Knapsack Selected Lineup 12/15/18</sup>
 
 * Unfortunately, this lineup was not a winner but was fairly accurate in determining overall score.
 
