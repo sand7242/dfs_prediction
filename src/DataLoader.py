@@ -3,11 +3,16 @@ import io
 import time
 import base64
 import requests
+import numpy as np
 import pandas as pd
 import datetime as dt
 from bs4 import BeautifulSoup
 from datetime import timedelta, date
 from ohmysportsfeedspy import MySportsFeeds
+
+# TEAMLOGS TODO
+# Teamlogs are loaded on their own and drop cols that startwith(team_foul, team_ejections)
+# Change so
 
 class DataLoader():
     '''
@@ -20,12 +25,22 @@ class DataLoader():
                 'gsw', 'hou', 'ind', 'lac', 'lal', 'mem', 'mia', 'mil', 'min', \
                 'nop', 'nyk', 'okl', 'orl', 'phi', 'phx', 'por', 'sac', 'sas', \
                 'tor', 'uta', 'was']
+        self.teamlogs = pd.DataFrame()
+        self.playerlogs = pd.DataFrame()
+        self.dfs_logs = pd.DataFrame()
+        self.dates = self._daterange()
 
     def main(self):
-        self.player_logs = self.load_game_logs('player', self.log_url)
-        self.team_logs = self.load_game_logs('team', self.log_url)
-        self.load_daily_dfs_logs()
-        self.merge_data(self.player_logs, self.dfs_logs, self.team_logs)
+        self.load_teamlogs()
+        self.format_teamlogs()
+        self.get_opp_feature()
+
+        self.load_dfs_logs()
+        self.load_playerlogs()
+        self.format_playerlogs()
+
+        self.merge_playerlogs()
+        self.format_final_playerlogs()
 
     def _send_request(self, url):
         try:
@@ -44,72 +59,108 @@ class DataLoader():
 
         return response
 
-    def load_game_logs(self, category, url):
-        df = pd.DataFrame()
-
+    def load_teamlogs(self):
         for team in self.teams:
-            response = self._send_request(url.replace('TEAM', team).replace('CAT', category))
+            response = self._send_request(self.log_url.replace('TEAM', team).replace('CAT', 'team'))
             team_df = pd.read_csv(io.StringIO(response.text), sep=',')
-            print(f"{team.upper()} {category.upper()} logs loaded\n{len(team_df)} observations")
-            df = pd.concat([df, team_df])
+            print(f"{team.upper()} teamlogs loaded\n{len(team_df)} observations")
+            self.teamlogs = pd.concat([self.teamlogs, team_df], sort=True)
             time.sleep(5)
 
-        to_drop = [x for x in df if x.startswith(('unnamed', 'date/time'))]
-        df.drop(to_drop, axis=1, inplace=True)
-        df.columns = [category + '_' + col for col in df.columns]
-        df = _clean_columns(df)
+        print(f"\n----------\n teamlogs loaded\nShape: {self.teamlogs.shape}")
 
-        path = '../data/CAT_2019_gamelogs.csv'
-        df.to_csv(path.replace('CAT', category))
+    def format_teamlogs(self):
+        self.teamlogs.columns = ['team_' + col for col in self.teamlogs.columns]
+        self.teamlogs = self._clean_columns(self.teamlogs)
 
-        print(f"\n----------\n{category.upper()} game logs loaded\nShape: {df.shape}")
+        to_drop = [x for x in self.teamlogs if x.startswith((
+        'team_unnamed',
+        'team_date/time',
+        'team_foulf',
+        'team_foulsdrawn',
+        'team_foulpersdrawn',
+        'team_foultechdrawn',
+        'team_ejections'
+        ))]
 
-        return df
+        self.teamlogs.drop(to_drop, axis=1, inplace=True)
 
-    def load_daily_dfs_logs(self):
-        self.dfs_logs = pd.DataFrame()
-        dates = self._daterange()
+        self.teamlogs['team_id_game_id'] = (self.teamlogs['team_team_id'].map(str) + self.playerlogs['team_game_id'].map(str)).map(int)
 
-        for date in dates:
+    def get_opp_feature(self):
+        self.teamlogs['opponent'] = np.where(
+        self.teamlogs['team_team_name'] == self.teamlogs['team_home_team_name'],
+        self.teamlogs['team_away_team_abbr.'],
+        self.teamlogs['team_home_team_abbr.']
+        )
+
+        self.teamlogs['opponent_id'] = np.where(
+        self.teamlogs['team_team_name'] == self.teamlogs['team_home_team_name'],
+        self.teamlogs['team_away_team_id'],
+        self.teamlogs['team_home_team_id']
+        )
+
+        self.teamlogs.to_csv('../data/teamlogs_2019.csv')
+
+    def load_dfs_logs(self):
+        for date in self.dates:
             response = self._send_request(self.dfs_url.replace('DATE', date))
             single_day_df = pd.read_csv(io.StringIO(response.text), sep=',')
             print(f"{date} loaded\n{len(single_day_df)} observations")
-            self.dfs_logs = pd.concat([self.dfs_logs, single_day_df]).dropna(axis=1, how='all')
-            time.sleep(5)
 
-        to_drop = [x for x in self.dfs_logs if x.startswith(('unnamed', 'date/time'))]
-        self.dfs_logs.drop(to_drop, axis=1, inplace=True)
-        self.dfs_logs.columns = ['player_' + col for col in self.dfs_logs.columns]
-        self.dfs_logs.to_csv('../data/dfs_2019_logs.csv')
+            self.dfs_logs = pd.concat([self.dfs_logs, single_day_df], sort=True).dropna(axis=1, how='all')
+            time.sleep(5)
 
         print(f"\n----------\nDFS game logs loaded\nShape: {self.dfs_logs.shape}")
 
-    def merge_data(self, player_logs, dfs_logs, team_logs):
-        player_logs['player_game_id'] = (player_logs['player_#Game ID'].map(str) + player_logs['player_#Player ID'].map(str)).map(int)
-        self.dfs_logs.dropna(subset=['player_#Game ID'], inplace=True)
-        self.dfs_logs['player_game_id'] = (self.dfs_logs['player_#Game ID'].map(int).map(str) + self.dfs_logs['player_#Player ID'].map(str)).map(int)
-        player_logs['team_game_id'] = (player_logs['player_#Game ID'].map(str) + player_logs['player_#Team ID'].map(str)).map(int)
-        team_logs['team_game_id'] = (team_logs['team_#Game ID'].map(str) + team_logs['team_#Team ID'].map(str)).map(int)
+    def load_playerlogs(self):
+        for team in self.teams:
+            response = self._send_request(self.log_url.replace('TEAM', team).replace('CAT', 'player'))
+            team_df = pd.read_csv(io.StringIO(response.text), sep=',')
+            print(f"{team.upper()} playerlogs loaded\n{len(team_df)} observations")
+            self.playerlogs = pd.concat([self.playerlogs, team_df], sort=True)
+            time.sleep(5)
 
-        keys = ['player_game_id', 'team_game_id']
-        self.merged_df = pd.merge(player_logs, self.dfs_logs, on=keys[0], how='inner', suffixes=('', '_y'))
-        self.merged_df = pd.merge(self.merged_df, team_logs, on=keys[1], how='inner')
+        print(f"\n----------\n playerlogs loaded\nShape: {self.playerlogs.shape}")
 
-        self.merged_df = self._clean_columns(self.merged_df)
-        self.merged_df = self.merged_df.sort_values(by='player_game_date')
-        self.merged_df['name'] = self.merged_df['player_firstname'] + ' ' + self.merged_df['player_lastname']
-        to_drop = [x for x in self.merged_df if x.startswith(('unnamed', 'Unnamed', 'player_date/time', 'team_date/time'))]
-        self.merged_df = self.merged_df.drop(to_drop, axis=1)
-        self.merged_df.to_csv('../data/merged_2019_df.csv')
+    def format_playerlogs(self):
+        self.dfs_logs = self._clean_columns(self.dfs_logs)
+        self.dfs_logs.columns = ['player_' + col for col in self.dfs_logs.columns]
 
-        print(f"2019 Data Loaded\n---------------\nShape: {self.merged_df.shape}")
+        self.playerlogs = self._clean_columns(self.playerlogs)
+        self.playerlogs.columns = ['player_' + col for col in self.playerlogs.columns]
+
+    def merge_playerlogs(self):
+        self.playerlogs['player_id_game_id'] = (self.playerlogs['player_player_id'].map(str) + self.playerlogs['player_game_id'].map(str)).map(int)
+        self.dfs_logs['player_id_game_id'] = (self.dfs_logs['player_player_id'].map(str) + self.dfs_logs['player_game_id'].map(str)).map(int)
+
+        key = 'player_id_game_id'
+        self.playerlogs = pd.merge(self.playerlogs, self.dfs_logs, on=key, how='inner', suffixes=('', '_y'))
+        self.playerlogs = self.playerlogs.sort_values(by='player_game_date')
+        self.playerlogs = self.playerlogs.reset_index(drop=True)
+
+    def format_final_playerlogs(self):
+        to_drop = [x for x in self.playerlogs if x.endswith(('_y', 'pergame')) or x.startswith((
+        'player_date/time',
+        'player_gamesstarted',
+        'player_fouls',
+        'player_foulpersdrawn',
+        'player_foult',
+        'player_foulf',
+        'player_ejections'
+        ))]
+
+        self.playerlogs.drop(to_drop, axis=1, inplace=True)
+
+        self.playerlogs['name'] = self.playerlogs['player_firstname'] + ' ' + self.playerlogs['player_lastname']
+        self.playerlogs['team_id_game_id'] = (self.playerlogs['player_team_id'].map(str) + self.playerlogs['player_game_id'].map(str)).map(int)
+
+        self.playerlogs.to_csv('../data/playerlogs_2019.csv')
 
     def _clean_columns(self, df):
         df.columns = df.columns.str.lower()
         df.columns = df.columns.str.replace(' ', '_')
         df.columns = df.columns.str.replace('#', '')
-        to_drop = [x for x in df if x.endswith(('_y', 'pergame')) or x.startswith(('unnamed', 'date/time'))]
-        df.drop(to_drop, axis=1, inplace=True)
 
         return df
 
@@ -124,7 +175,9 @@ class DataLoader():
 
         return dates
 
+
 if __name__ == '__main__':
+    pd.set_option('display.max_columns', 200)
     start_dt = dt.datetime.now()
 
     dl = DataLoader()
